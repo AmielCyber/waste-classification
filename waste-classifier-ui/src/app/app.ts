@@ -1,11 +1,10 @@
 import { Component} from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { WasteBinComponent } from './waste-bin/waste-bin.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { BinGridComponent } from './bin-grid/bin-grid.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, WasteBinComponent, NavBarComponent],
+  imports: [NavBarComponent, BinGridComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
