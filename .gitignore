@@ -220,3 +220,4 @@ waste-classifier-ui/.editorconfig
 waste-classifier-ui/.prettierrc
 .DS_Store
 .idea/**
+.DS_Store
