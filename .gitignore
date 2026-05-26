@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+waste-classifier-ui/.editorconfig
+waste-classifier-ui/.prettierrc
+.DS_Store
+.idea/**
+.DS_Store
