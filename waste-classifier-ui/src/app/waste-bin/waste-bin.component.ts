@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { UpperCasePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { NgClass, NgStyle, UpperCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-waste-bin',
@@ -8,6 +8,7 @@ import { UpperCasePipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WasteBinComponent {
+  readonly isHighlighted = input(false);
   readonly wasteType = input.required<string>();
   readonly binColor = input.required<string>();
 }
