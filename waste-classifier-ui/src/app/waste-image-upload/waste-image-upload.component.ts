@@ -23,7 +23,7 @@ export class WasteImageUploadComponent {
   protected readonly selectedFile = signal<File | null>(null);
   protected readonly imageUrl = signal<string | null>(null);
 
-  protected readonly fileName = computed(() => {
+  protected readonly displayFileName = computed(() => {
     const name = this.selectedFile()?.name ?? '';
     return name === '' ? name : name.slice(0, 10) + '...';
   });

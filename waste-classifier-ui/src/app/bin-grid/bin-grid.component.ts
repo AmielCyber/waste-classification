@@ -11,4 +11,5 @@ import { WasteBinComponent } from '../waste-bin/waste-bin.component';
 export class BinGridComponent {
   private readonly wasteBinService = inject(WasteBinService);
   protected readonly bins = this.wasteBinService.bins;
+  protected readonly binSelected = this.wasteBinService.binSelected;
 }
