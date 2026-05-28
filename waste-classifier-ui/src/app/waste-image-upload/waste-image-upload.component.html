@@ -45,9 +45,10 @@
   }
 
   <button
+    type="button"
     (click)="onImageUpload()"
     [disabled]="!selectedFile() || imageClassifierService.prediction.isLoading()"
-    class="w-full py-3 px-6 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white font-bold rounded-xl transition-colors"
+    class="w-full py-3 px-6 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white font-bold rounded-xl transition-colors cursor-pointer disabled:cursor-progress"
   >
     @if (imageClassifierService.prediction.isLoading()) {
       THINKING...
