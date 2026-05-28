@@ -1,27 +1,31 @@
-<div
-  class="mx-auto mt-6 mb-8 flex max-w-5xl items-center justify-center gap-6 rounded-xl border border-green-200 bg-green-50 px-8 py-5 shadow-sm"
->
-  <div class="flex h-9 w-9 items-center justify-center rounded-full bg-green-600 text-lg font-bold text-white">
-    ✓
-  </div>
-  <div class="h-6 w-px bg-gray-300"></div>
+<div class="mx-auto mt-6 mb-8 max-w-5xl min-h-19">
+  @if (prediction.hasValue()) {
+    <div
+      class="flex w-full items-center justify-center gap-6 rounded-xl border border-green-200 bg-green-50 px-8 py-5 shadow-sm"
+    >
+      <div class="flex h-9 w-9 items-center justify-center rounded-full bg-green-600 text-lg font-bold text-white">
+        ✓
+      </div>
+      <div class="h-6 w-px bg-gray-300"></div>
 
-  <div class="flex items-center gap-1 text-lg">
-    <span class="font-semibold text-slate-700">Detected Waste Type:</span>
-    <span class="font-bold text-green-600"> PLASTIC </span>
-  </div>
+      <div class="flex items-center gap-1 text-lg">
+        <span class="font-semibold text-slate-700">Detected Waste Type:</span>
+        <span class="font-bold text-green-600"> {{ prediction.value().type }} </span>
+      </div>
 
-  <div class="h-6 w-px bg-gray-300"></div>
+      <div class="h-6 w-px bg-gray-300"></div>
 
-  <div class="flex items-center gap-1 text-lg">
-    <span class="font-semibold text-slate-700">Confidence:</span>
-    <span class="font-bold text-green-600"> 99.99% </span>
-  </div>
+      <div class="flex items-center gap-1 text-lg">
+        <span class="font-semibold text-slate-700">Confidence:</span>
+        <span class="font-bold text-green-600"> {{ prediction.value().confidence | percent }} </span>
+      </div>
 
-  <div class="h-6 w-px bg-gray-300"></div>
+      <div class="h-6 w-px bg-gray-300"></div>
 
-  <div class="flex items-center gap-1 text-lg">
-    <span class="font-semibold text-slate-700">Destination:</span>
-    <span class="font-bold text-green-600"> PLASTIC BIN </span>
-  </div>
+      <div class="flex items-center gap-1 text-lg">
+        <span class="font-semibold text-slate-700">Destination:</span>
+        <span class="font-bold text-green-600"> Bin </span>
+      </div>
+    </div>
+  }
 </div>
