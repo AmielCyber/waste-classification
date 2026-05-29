@@ -21,5 +21,11 @@
         <span class="font-bold"> {{ prediction.value().confidence | percent }} </span>
       </div>
     </div>
+  } @else {
+    <div
+      class="flex h-19 w-full items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50 text-slate-400"
+    >
+      Feed your trash image below to properly disposed.
+    </div>
   }
 </div>
