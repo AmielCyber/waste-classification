@@ -2,13 +2,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  DestroyRef,
+  effect,
   inject,
   signal,
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
 import { ImageClassificationService } from '../services/image-classification.service';
+import { FormControl, Validators } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-waste-image-upload',
@@ -17,46 +19,52 @@ import { ImageClassificationService } from '../services/image-classification.ser
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WasteImageUploadComponent {
-  private readonly destroyRef = inject(DestroyRef);
   protected readonly imageClassifierService = inject(ImageClassificationService);
 
-  protected readonly selectedFile = signal<File | null>(null);
+  protected readonly imageControl = new FormControl<File | null>(null,[
+    Validators.required,
+  ])
+  protected readonly selectedFile = toSignal(this.imageControl.valueChanges,{
+    initialValue: null,
+  })
   protected readonly imageUrl = signal<string | null>(null);
 
-  protected readonly displayFileName = computed(() => {
-    const name = this.selectedFile()?.name ?? '';
-    return name === '' ? name : name.slice(0, 10) + '...';
-  });
   protected readonly displayFileSize = computed(() => {
-    const size = this.selectedFile()?.size ?? 0;
-    return size === 0 ? size : size / 1024;
+    const size = this.selectedFile()?.size;
+    return size? size / (1024 * 1024) : 0;
   });
 
   constructor() {
-    this.destroyRef.onDestroy(() => {
-      const url = this.imageUrl();
-      if (url) {
-        URL.revokeObjectURL(url);
+    effect((onCleanup) => {
+      const file = this.selectedFile();
+      if (file) {
+        const url = URL.createObjectURL(file);
+        this.imageUrl.set(url);
+        onCleanup(() => {
+          URL.revokeObjectURL(url)
+        });
+      }else{
+        this.imageUrl.set(null);
       }
+      onCleanup(() => {
+        this.imageClassifierService.clearImage();
+      })
     });
   }
 
   protected onFileSelected(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      const oldUrl = this.imageUrl();
-      if (oldUrl) {
-        URL.revokeObjectURL(oldUrl);
-      }
-      this.selectedFile.set(file);
-      this.imageUrl.set(URL.createObjectURL(file));
-    }
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+    this.imageControl.setValue(file);
   }
 
-  protected onImageUpload(): void {
-    const file = this.selectedFile();
-    if (file) {
-      this.imageClassifierService.classifyImage(file);
+  protected onSubmission(): void {
+    if (this.imageClassifierService.prediction.hasValue()) {
+      this.imageClassifierService.clearImage();
+      this.imageControl.reset(null)
+    }
+    else if(this.imageControl.valid && this.imageControl.value){
+      this.imageClassifierService.classifyImage(this.imageControl.value);
     }
   }
 }
