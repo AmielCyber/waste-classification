@@ -15,9 +15,9 @@ export class BinGridComponent {
 
   protected readonly bins = this.wasteBinService.bins;
   protected readonly selectedBin = computed(() => {
-    if(this.imageClassifierService.prediction.hasValue()){
-      return this.imageClassifierService.prediction.value().type
+    if (this.imageClassifierService.prediction.hasValue()) {
+      return this.imageClassifierService.prediction.value().type;
     }
-    return null
-  })
+    return null;
+  });
 }
