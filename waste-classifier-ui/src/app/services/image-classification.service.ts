@@ -1,40 +1,37 @@
-import { Injectable, signal } from '@angular/core';
-import {httpResource} from '@angular/common/http';
-import { WasteType } from './waste-bin.service';
+import {Service, injectAsync, onIdle, resource, signal} from '@angular/core';
+import type {WasteClassification} from './onnx-inference.service';
 
-export interface ClassificationResult {
-  type: WasteType;
-  confidence: number;
-}
-
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ImageClassificationService {
-  private readonly imageFile = signal<File | null>(null);
+  private readonly imageFile = signal<File | undefined>(undefined);
 
-  readonly prediction = httpResource<ClassificationResult>(() => {
-    const file = this.imageFile(); // Reacts to imageFile state changed.
-    if (!file) {
-      return undefined;
+  private readonly getInferenceService = injectAsync(
+    () => import('./onnx-inference.service').then(m => m.OnnxInferenceService),
+    {prefetch: onIdle}
+  )
+
+  readonly prediction = resource({
+    params: () => ({file: this.imageFile()}),
+    loader: async({params, abortSignal}): Promise<WasteClassification> => {
+      if(params.file){
+        const inferenceService = await this.getInferenceService();
+        const result = await inferenceService.classify(params.file);
+        if (abortSignal.aborted) {
+          throw new DOMException('Clasification aborted', 'AbortError');
+        }
+        return result;
+      }else{
+        throw new DOMException('Classification aborted', 'AbortError');
+      }
     }
-
-    const formData = new FormData();
-    formData.append('image', file);
-
-    return {
-      url: '/api/predict-image',
-      method: 'POST',
-      body: formData,
-    };
   });
 
   classifyImage(file: File): void {
-    // Trigger reactivity so prediction can be called.
     this.imageFile.set(file);
   }
 
   clearImage(): void {
-    this.imageFile.set(null);
+    this.imageFile.set(undefined);
   }
+
 }

@@ -1,5 +1,5 @@
 import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
-import { ClassificationResult } from '../services/image-classification.service';
+import {WasteClassification} from '../services/onnx-inference.service';
 import { delay, of } from 'rxjs';
 import { inject } from '@angular/core';
 import { WasteBin, WasteBinService, WasteType } from '../services/waste-bin.service';
@@ -24,7 +24,7 @@ export const mockClassificationInterceptor: HttpInterceptorFn = (req, next) => {
   const bins = wastBinService.bins;
   if (req.url.includes('api/predict-image') && req.method === 'POST') {
     console.log('Mocking classification request...');
-    const mockResponse: ClassificationResult = {
+    const mockResponse: WasteClassification = {
       type: getRandomWasteType(bins),
       confidence: getRandomConfidence()
     };
