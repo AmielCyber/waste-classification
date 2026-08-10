@@ -1,4 +1,4 @@
-# waste-classification
+# waste-sorter
 
 Waste Classification Demo
 
